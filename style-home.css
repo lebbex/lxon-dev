@@ -1,0 +1,302 @@
+/*
+    NAV BOX
+*/
+
+.nav-hitbox {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    height: 69px;
+    width: 100%;
+}
+
+.nav-wrapper {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.nav-box {
+    transform: translateY(0);
+    display: flex;
+    align-items: stretch;
+    padding: 0.4rem;
+    border-radius: 8px;
+    background: rgba(10, 12, 16, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform 1.2s cubic-bezier(0.3, 1, 0.5, 1);
+    box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.02);
+}
+
+.nav-box.nav-hidden {
+    transform: translateY(calc(-100% - 1.3rem));
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    opacity: 0.8;
+    cursor: default;
+    transition: opacity 0.2s ease, background 0.4s ease;
+    white-space: nowrap;
+}
+
+@media(hover: hover) {
+    .nav-link:hover {
+        opacity: 1;
+        background: rgba(231, 235, 241, 0.08);
+    }
+}
+
+.nav-link .short-text-doc {
+    display: none;
+}
+
+@media (max-width: 520px) {
+    .nav-link .full-text-doc {
+        display: none;
+    }
+
+    .nav-link .short-text-doc {
+        display: inline;
+    }
+}
+
+.nav-link .short-text-git {
+    display: none;
+}
+
+@media (max-width: 440px) {
+    .nav-link .full-text-git {
+        display: none;
+    }
+
+    .nav-link .short-text-git {
+        display: inline;
+    }
+}
+
+@media (max-width: 420px) {
+    .site-icon {
+        top: calc(5.5rem - 10px);
+    }
+}
+
+@media (max-width: 300px) {
+    .nav-git {
+        display: none !important;
+    }
+}
+
+@media (max-width: 210px) {
+    .nav-editor {
+        display: none !important;
+    }
+}
+
+.dropdown {
+    position: fixed;
+    top: 3.9rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    visibility: collapse;
+}
+
+.dropdown-content {
+    display: flex;
+    align-items: stretch;
+    margin-top: 0.7rem;
+    transform: translateY(-0.2rem);
+    transition: transform 0.8s ease-out;
+}
+
+.dropdown-content.visible {
+    transform: translateY(0);
+}
+
+.dropdown-content-box {
+    z-index: 100;
+    border-radius: 8px;
+    padding: 0.4rem;
+    background: rgba(10, 12, 16, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.02);
+}
+
+.dropdown-content-box.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dropdown-blur {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.subdown {
+    position: fixed;
+    top: 0.7rem;
+    left: calc(100% - 0.45rem);
+    visibility: collapse;
+}
+
+.subdown-wrapper {
+    margin-left: 0.75rem;
+    transform: translateX(-0.25rem);
+    transition: transform 1.6s cubic-bezier(0, 1, 0.8, 1);
+}
+
+.subdown-wrapper.visible {
+    transform: translateX(0);
+}
+
+.subdown-content {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 8px;
+    transform: translateY(0);
+}
+
+.subdown-content.containers {
+    transform: translateY(0);
+}
+
+.subdown-content.keys {
+    transform: translateY(2.5rem);
+}
+
+.subdown-content.values {
+    transform: translateY(5rem);
+}
+
+.subdown-content-box {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    padding: 0.4rem;
+    border-radius: 8px;
+    background: rgba(10, 12, 16, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.02);
+}
+
+.subdown-content-box.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+/* Plain wrapper, no positioning tricks needed - Lenis smooth-scrolls
+     the real page, content just sits in normal flow. */
+#scroll-container {
+    width: 100%;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 10s ease;
+}
+
+#scroll-container.loaded {
+    opacity: 1;
+}
+
+section {
+    min-height: 50lvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    padding: 8lvh 8lvw;
+    align-items: center;
+    text-align: center;
+}
+
+.landing {
+    min-height: 100lvh;
+    height: 100lvh;
+    justify-content: center;
+    padding-bottom: 10lvh;
+}
+
+.eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 1.2rem;
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 0 1rem 0;
+    max-width: 18ch;
+    font-weight: 600;
+    overflow-x: hidden;
+    user-select: none;
+}
+
+h2 {
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    margin: 0 0 1rem 0;
+    max-width: 20ch;
+    font-weight: 600;
+    overflow-x: hidden;
+    user-select: none;
+}
+
+p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--ink-dim);
+    max-width: 74ch;
+    overflow-wrap: anywhere;
+}
+
+.e404 {
+    font-size: 500%;
+    padding-bottom: 50px;
+    text-decoration: underline solid rgba(255, 255, 255, 0.3) 1px; 
+    text-underline-offset: 15px;
+    user-select: none;
+}
+
+.not-found {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: lighter;
+    font-size: 90%;
+    padding-bottom: 50px;
+    user-select: none;
+}
+
+footer {
+    padding: 3vh 0;
+    color: var(--ink-dim);
+    font-size: 0.85rem;
+    align-items: center;
+    text-align: center;
+    user-select: none;
+}

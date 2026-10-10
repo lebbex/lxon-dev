@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>LXON 404 (Not Found)</title>
+	<link rel="icon" href="ressources/lxon.png" type="image/x-icon">
+	<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400&display=swap">
+	<link rel="stylesheet" href="/ressources/styles.css">
+	<link rel="stylesheet" href="style-home.css">
+</head>
+
+<body>
+
+	<canvas id="noise-canvas"></canvas>
+
+	<a href="/" class="site-icon site-home">
+		<img src="/ressources/home.png" alt="Home">
+	</a>
+
+	<div id="scroll-container">
+		<main>
+			<section class="landing">
+				<div class="e404">404</div>
+				<div class="not-found"></div>
+			</section>
+
+			<div class="divider"></div>
+
+			<footer>
+				©Lebbex 2026. All rights reserved.
+			</footer>
+		</main>
+	</div>
+
+	<script src="https://unpkg.com/lenis@1.3.23/dist/lenis.min.js"></script>
+	<script src="/ressources/fog.js"></script>
+	<script>
+		const lenis = new Lenis({
+			lerp: 0.1,
+			wheelMultiplier: 0.5,
+		});
+
+		const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+		function docuRaf(time) {
+			lenis.raf(time);
+			requestAnimationFrame(docuRaf);
+		}
+		requestAnimationFrame(docuRaf);
+
+		// End key acts like Page Down instead of jumping to the bottom
+		window.addEventListener('keydown', (e) => {
+			if (e.key !== 'End') return;
+			if (e.altKey || e.metaKey) return;
+
+			const t = e.target;
+			if (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+
+			e.preventDefault();
+			window.scrollBy({ top: window.innerHeight * 0.875 });
+		});
+
+		fog.init([-0.12, -0.1, -0.15], [0.7, 0.69, 0.8], lenis, document.scrollingElement, 0.02, 1, 0.06, -0.5);
+
+		const scrollContainer = document.getElementById('scroll-container');
+
+		scrollContainer.classList.add('loaded');
+
+		let notFoundMessages = [
+			"Looks like you typed some bullshit",
+			"Looks like you typed some bullshit",
+			"Looks like you typed some bullshit",
+			"Looks like you typed some bullshit",
+			"Looks like you typed some bullshit",
+			"Looks like you typed some bullshit",
+			"Kinda looks like you typed some bullshit",
+			"Kinda looks like you typed some bullshit",
+			"Kinda looks like you typed some bullshit",
+			"Looks to me like you typed some bullshit",
+			"Sorta looks like you typed some bullshit",
+			"This could have been a phishing link",
+			"Bold of you to assume this page exists",
+			"Close, but no cigar",
+			"This page is in another castle",
+			"Try typing the link with your feet",
+			"Try typing the link with your eyes closed",
+			"The first part of the link is right",
+			"Try the wayback machine",
+			"Such a bespoke website, imagine what that page could look like",
+			"Such an immaculate website, imagine what that page could have been",
+			"This website has no promo codes",
+			"This website has no secret pages",
+			"Don't look too close",
+			"If you spot something, ignore it",
+			"Slow down dropping all that BS in the address bar",
+			"Woah, good thing that page doesn't exist",
+			"That's a pretty big number, what could it mean though?",
+			"That's a pretty big number, might mean something too",
+			"What a bad website, missing pages and all",
+			"What a lazy website, just load my page",
+			"Pick up some salt, blow on it, throw it in the air and read what it says on the ground",
+			"Thank you for reducing server costs",
+			"Who are you and why are you in my house?",
+			"That's one wrong turn too many",
+			"Were you even trying?",
+			"Look around, take a hint",
+			"I spent too long on this website, go look at it for real",
+			"Not all those who wander are lost",
+			"Not till we are lost do we begin to find ourselves",
+			"Sometimes, when you lose your way, you find yourself",
+			"It's important for the explorer to be willing to be led astray",
+			"To be lost is as legitimate a part of your process as being found",
+			"If you don't know where you're going, any road will get you there",
+			"Try swapping a few letters",
+			"Please appreciate the foggy background",
+			"Take a moment to admire the foggy background",
+			"This background took almost a week, please stare at it for a bit",
+			"This page is winning at hide and seek",
+			"This page is being built, come back in a few years",
+			"This page might be on another website",
+			"Don't trust Ivan",
+			"Try making a website with infinite pages",
+			"Try procedurally generating pages yourself",
+			"There's only 46 pages on this website, your odds were slim",
+			"Someone tried parsing the HTML on this page using regex",
+			"Reload the page, something might happen",
+			"Don't worry, I couldn't find this page either",
+			"That's the worst guess I've seen all day",
+			"Whoever gave you this link doesn't like you",
+			"Sorry, this page told me it doesn't want to see you anymore",
+			"You gotta stop chasing the pages and let them come to you"
+		];
+
+		notFoundMessages.push(`Funny message number ${Math.floor(Math.random() * notFoundMessages.length) + 1}`);
+
+		const goodRiddanceMessages = [
+			"Thank God he didn't do the thing",
+			"He was about to do the thing",
+			"I was anticipating the end",
+			"You saved me, thank you",
+			"Ivan must have sent him",
+			"I've been dealing with him for months"
+		]
+
+		const cloudMessages = [
+			["Don't touch the cloud"],
+			["Stop", "Stop that", "Stop it"],
+			["I said stop!", "Cut it out man!", "Please stop touching the cloud"],
+			["STOP DOING THAT!", "I'VE HAD IT!", "STOP TOUCHING THE CLOUD!"],
+			["LAST WARNING!", "THIS IS YOUR LAST CHANCE!"]
+		];
+
+		function perlin1D(x) {
+			const hash = (n) => {
+				const s = Math.sin(n * 127.1) * 43758.5453;
+				return (s - Math.floor(s)) * 2 - 1; // gradient in [-1, 1]
+			};
+			const xi = Math.floor(x);
+			const xf = x - xi;
+			const u = xf * xf * xf * (xf * (xf * 6 - 15) + 10); // smooth fade curve
+			const a = hash(xi) * xf;
+			const b = hash(xi + 1) * (xf - 1);
+			return (a + (b - a) * u) * 2; // roughly [-1, 1]
+		}
+
+		const notFoundEl = document.querySelector('.not-found');
+		notFoundEl.innerHTML = notFoundMessages[Math.floor(Math.random() * notFoundMessages.length)];
+
+		const DEBUG_SPAWN_ALL = false;
+		const MAN_CHANCE = 0.2;
+		const CLOUD_CHANCE = 0.25;
+		const LONG_CHANCE = 0.15;
+
+		const CLOUD_PUSH_SCREEN_AREA_PERCENTAGE = 20; // edge zone size, as % of page width
+		const CLOUD_MAX_PUSH_FORCE = 4;               // px per 60fps frame, at the very edge
+		const CLOUD_SPEED = 0.5;                      // speed multiplier
+		const CLOUD_NOISE_FREQUENCY = 0.1;            // how fast the noise changes (per second)
+		const RAIN_WIND_MAX_ANGLE = 15;
+		const RAIN_WIND_NOISE_FREQUENCY = 0.4;
+
+		if (Math.random() < MAN_CHANCE || DEBUG_SPAWN_ALL) {
+			spawnDoor();
+		}
+		if (Math.random() < CLOUD_CHANCE || DEBUG_SPAWN_ALL) {
+			spawnCloud();
+		}
+		if (Math.random() < LONG_CHANCE || DEBUG_SPAWN_ALL) {
+			spawnLongFooter();
+		}
+
+		function spawnLongFooter() {
+			const footer = document.querySelector('footer');
+			footer.style.position = 'relative';
+			if (Math.random() < 0.2) footer.style.paddingBottom = '444444444400000000004444444444px';
+			else footer.style.paddingBottom = '440044px';
+
+			const style = document.createElement('style');
+			style.textContent = `
+		.back-to-top {
+			position: absolute; left: 0; bottom: 60px; width: 100%;
+			background: none; border: none; outline: none;
+			font: inherit; color: inherit; text-align: center;
+			opacity: 0.4; cursor: pointer;
+			transition: opacity 0.3s ease;
+			-webkit-tap-highlight-color: transparent;
+		}
+		.back-to-top:hover { opacity: 0.8; }
+	`;
+			document.head.appendChild(style);
+
+			const btn = document.createElement('button');
+			btn.className = 'back-to-top';
+			btn.textContent = 'Press me to go back to the top';
+			btn.addEventListener('click', () => {
+				lenis.scrollTo(0, {
+					duration: 4,
+					easing: (t) => 1 - Math.pow(1 - t, 4), // fast start, soft landing
+				});
+			});
+			footer.appendChild(btn);
+
+			lenis.resize(); // make Lenis pick up the new page height right away
+		}
+
+		function spawnFloatingMan(origin) {
+			const man = document.createElement('img');
+			man.src = 'ressources/floatingman.png';
+			man.draggable = false;
+			Object.assign(man.style, {
+				position: 'fixed',
+				left: '0',
+				top: '0',
+				height: '150px',
+				width: 'auto',
+				zIndex: '9999',
+				cursor: 'pointer',
+				userSelect: 'none',
+				webkitUserSelect: 'none',
+				touchAction: 'manipulation',
+				willChange: 'transform',
+				opacity: '1',
+				visibility: 'hidden',
+				filter: 'drop-shadow(0px 0px 7px rgba(150, 150, 150, 0.1))',
+				webkitTapHighlightColor: 'transparent',
+				outline: 'none',
+				webkitTouchCallout: 'none',
+			});
+
+			man.style.setProperty('transition', 'none', 'important');
+			let spawning = !!origin;
+
+			// random speed between 2 and 10, with the given sign (1 or -1)
+			const randSpeed = (sign) => sign * (2 + Math.random() * 8);
+			const randSign = () => (Math.random() < 0.5 ? -1 : 1);
+
+			let x = 0, y = 0;
+			let vx = randSpeed(randSign());
+			let vy = randSpeed(randSign());
+			let last = null;
+			let speed = 1.0;
+			let dead = false;
+			let rot = 0;
+			let rotSpeed = 0;
+
+			const jumpSounds = Array.from({ length: 5 }, (_, i) => {
+				const a = new Audio(`ressources/jump${i}.ogg`);
+				a.preload = 'auto';
+				return a;
+			});
+
+			const stepSounds = Array.from({ length: 20 }, (_, i) => {
+				const a = new Audio(`ressources/${i}.ogg`);
+				a.preload = 'auto';
+				return a;
+			});
+
+			const hurtSound = new Audio(`ressources/hurt.ogg`);
+			hurtSound.preload = 'auto';
+
+			function playStep() {
+				const s = stepSounds[Math.floor(Math.random() * stepSounds.length)];
+				s.currentTime = 0;
+				s.play().catch(() => { });
+			}
+
+			const activeSources = new Set();
+
+			function play(name, volume = 1) {
+				const buf = buffers[name];
+				if (!buf || audioCtx.state !== 'running') return;
+				const src = audioCtx.createBufferSource();
+				const gain = audioCtx.createGain();
+				src.buffer = buf;
+				gain.gain.value = Math.min(1, volume);
+				src.connect(gain).connect(audioCtx.destination);
+
+				activeSources.add(src);
+				src.onended = () => activeSources.delete(src);
+
+				src.start();
+			}
+
+			function stopAllSounds() {
+				activeSources.forEach(src => {
+					try { src.stop(); } catch (e) { }
+				});
+				activeSources.clear();
+			}
+
+			function dodge() {
+				if (dead) return;
+				if (spawning) return;
+				speed = speed * 2 + 2;
+				if (Math.random() < 0.8) vy = randSpeed(randSign());
+				if (Math.random() < 0.8) vx = randSpeed(randSign());
+				const sound = jumpSounds[Math.floor(Math.random() * jumpSounds.length)];
+				sound.currentTime = 0;
+				sound.play().catch(() => { });
+			}
+
+			function die() {
+				if (spawning) return;
+				stopAllSounds();
+				hurtSound.play();
+				dead = true;
+				vy = -10;
+				rotSpeed = (Math.random() < 0.5 ? -1 : 1) * 2;
+				notFoundEl.innerHTML = goodRiddanceMessages[Math.floor(Math.random() * goodRiddanceMessages.length)];
+			}
+
+			man.addEventListener('pointerenter', (e) => {
+				if (e.pointerType === 'touch') return;
+				if (Math.random < 0.3) return;
+				dodge();
+			});
+
+			man.addEventListener('pointerdown', (e) => {
+				if (e.pointerType === 'touch') {
+					if (Math.random() < 0.9) {
+						dodge();
+						return;
+					}
+				}
+				die();
+			});
+
+			function tick(time) {
+				if (last === null) last = time;
+				// normalize to 60fps so speed is the same on 120/144Hz screens
+				const dt = Math.min((time - last) / 16.667, 3);
+				last = time;
+
+				const w = man.offsetWidth;
+				const h = man.offsetHeight;
+				const maxX = window.innerWidth - w;
+				const maxY = window.innerHeight - h;
+
+				if (dead) {
+					const GRAVITY = 0.4;
+
+					if (vx > 10) vx = 10;
+					if (vx < -10) vx = -10;
+
+					vy += GRAVITY * dt;
+					x += vx * dt;
+					y += vy * dt;
+					rot += rotSpeed * dt;
+
+					man.style.translate = `${x}px ${y}px`;
+					man.style.rotate = `${rot}deg`;
+					requestAnimationFrame(tick);
+					return;
+				}
+
+				if (spawning) {
+					man.style.translate = `${x}px ${y}px`;
+					requestAnimationFrame(tick);
+					return;
+				}
+
+				x += vx * dt * speed;
+				y += vy * dt * speed;
+
+				speed = speed - dt * 0.01 * speed;
+				if (speed < 0.2) speed = Math.random();
+
+				if (Math.random() < 0.005) {
+					vy = randSpeed(randSign());
+					vx = randSpeed(randSign());
+					playStep();
+				}
+
+				if (x <= 0) {
+					x = 0;
+					vx = randSpeed(1);
+					if (Math.random() < 0.3) vy = randSpeed(randSign());
+					playStep();
+				} else if (x >= maxX) {
+					x = maxX;
+					vx = randSpeed(-1);
+					if (Math.random() < 0.3) vy = randSpeed(randSign());
+					playStep();
+				}
+
+				if (y <= 0) {
+					y = 0;
+					vy = randSpeed(1);
+					if (Math.random() < 0.3) vx = randSpeed(randSign());
+					playStep();
+				} else if (y >= maxY) {
+					y = maxY;
+					vy = randSpeed(-1);
+					if (Math.random() < 0.3) vx = randSpeed(randSign());
+					playStep();
+				}
+
+				man.style.translate = `${x}px ${y}px`;
+				requestAnimationFrame(tick);
+			}
+
+			man.addEventListener('load', () => {
+				const w = man.offsetWidth;
+				const h = man.offsetHeight;
+				const maxX = Math.max(0, window.innerWidth - w);
+				const maxY = Math.max(0, window.innerHeight - h);
+
+				if (origin) {
+					x = Math.min(Math.max(0, origin.x - w / 2), maxX);
+					y = Math.min(Math.max(0, origin.y - h / 2), maxY);
+				} else {
+					x = Math.random() * maxX;
+					y = Math.random() * maxY;
+				}
+
+				man.style.translate = `${x}px ${y}px`;
+				man.style.visibility = 'visible';
+				requestAnimationFrame(tick);
+
+				if (origin) {
+					man.animate(
+						[{ scale: '0.1' }, { scale: '1' }],
+						{ duration: 1200, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' }
+					);
+					setTimeout(() => { spawning = false; dodge(); }, 1200);
+				}
+			});
+
+			document.body.appendChild(man);
+		}
+
+
+		function spawnDoor() {
+			const LINGER = 4000;
+			const side = Math.random() < 0.5 ? 'left' : 'right';
+
+			let state = 0;
+			let busy = false;
+
+			const knockSound = new Audio('ressources/knock.ogg');
+			knockSound.preload = 'auto';
+			const openSound = new Audio('ressources/open.ogg');
+			openSound.preload = 'auto';
+
+			const style = document.createElement('style');
+			style.textContent = `
+		.door {
+			position: absolute; bottom: 0; ${side}: 4vw;
+			height: min(75px, 22vh);
+			aspect-ratio: 800 / 900;
+			translate: 0 2px; /* pushes the door down */
+			z-index: 1;
+			pointer-events: none;
+			opacity: 0; transition: opacity 3s ease;
+			${side === 'right' ? 'transform: scaleX(-1);' : ''}
+		}
+		.door.visible { opacity: 0.05; }
+		.door.fade { opacity: 0 !important; transition: opacity 3s ease !important; }
+		.door img {
+			position: absolute; left: 0; bottom: 0;
+			height: 100%; width: auto;
+			pointer-events: auto;
+			user-select: none; -webkit-user-select: none;
+			-webkit-user-drag: none;
+			-webkit-tap-highlight-color: transparent;
+		}
+		.door .door-open { display: none; }
+		.door.open .door-closed { display: none; }
+		.door.open .door-open { display: block; cursor: default; pointer-events: none; }
+	`;
+			document.head.appendChild(style);
+
+			const door = document.createElement('div');
+			door.className = 'door';
+
+			const closedImg = document.createElement('img');
+			closedImg.className = 'door-closed';
+			closedImg.src = 'ressources/closed.png';
+			closedImg.draggable = false;
+
+			const openImg = document.createElement('img');
+			openImg.className = 'door-open';
+			openImg.src = 'ressources/open.png';
+			openImg.draggable = false;
+
+			door.append(closedImg, openImg);
+
+			// the door lives inside the landing section, pinned to its bottom edge
+			// (so it scrolls with the page and sits right above the divider/footer)
+			const landing = document.querySelector('.landing');
+			if (getComputedStyle(landing).position === 'static') landing.style.position = 'relative';
+			landing.appendChild(door);
+
+			closedImg.addEventListener('pointerdown', () => {
+				if (busy || state >= 1000) return;
+
+				if (state < Math.random() * 20) {
+					busy = true;
+					setTimeout(() => {
+						knockSound.currentTime = 0;
+						knockSound.play().catch(() => { });
+						state += 1;
+						busy = false;
+					}, 100);
+					return;
+				}
+
+				state = 1000;
+				const r = closedImg.getBoundingClientRect(); // read before hiding it
+				const origin = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+
+				door.classList.add('open');
+				notFoundEl.textContent = "Yo who the fuck is this guy? Catch him before he does something strange";
+				openSound.play();
+				spawnFloatingMan(origin);
+
+				setTimeout(() => {
+					door.classList.add('fade');
+					setTimeout(() => {
+						door.remove();
+						style.remove();
+					}, 3000);
+				}, LINGER);
+			});
+
+			requestAnimationFrame(() => requestAnimationFrame(() => door.classList.add('visible')));
+		}
+
+		function startRain() {
+			const canvas = document.createElement('canvas');
+			Object.assign(canvas.style, {
+				position: 'fixed',
+				left: '0',
+				top: '0',
+				width: '100%',
+				height: '100%',
+				pointerEvents: 'none',
+				zIndex: '10000',
+			});
+			document.body.appendChild(canvas);
+			const ctx = canvas.getContext('2d');
+
+			let W = 0, H = 0;
+			function resize() {
+				const dpr = window.devicePixelRatio || 1;
+				W = window.innerWidth;
+				H = window.innerHeight;
+				canvas.width = W * dpr;
+				canvas.height = H * dpr;
+				ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			}
+			resize();
+			window.addEventListener('resize', resize);
+
+			const RAIN_COLOR = 'rgba(200, 225, 255, 0.2)';
+			const DESPAWN_MARGIN = 100;  // px past any edge before a drop is removed
+			const drops = [];
+			let spawnAcc = 0;
+			let last = null;
+
+			// wind always blows from one side, picked once: 1 = from the left (drops move right), -1 = from the right
+			const windSide = Math.random() < 0.5 ? -1 : 1;
+			const windNoiseOffset = Math.random() * 1000;
+			const maxTan = Math.tan(RAIN_WIND_MAX_ANGLE * Math.PI / 180);
+
+			function tick(time) {
+				if (last === null) last = time;
+				// normalize to 60fps so it looks the same on 120/144Hz screens
+				const dt = Math.min((time - last) / 16.667, 3);
+				last = time;
+
+				// perlin noise -> wind strength 0..1, never flips sides
+				const noise = perlin1D((time / 1000) * RAIN_WIND_NOISE_FREQUENCY + windNoiseOffset);
+				const strength = Math.min(Math.max((noise + 1) / 2, 0), 1);
+				const angle = windSide * strength * RAIN_WIND_MAX_ANGLE * Math.PI / 180;
+				const slant = Math.tan(angle); // x movement per 1px of y movement
+
+				// spawn a bit past the upwind edge so slanted drops still cover the whole screen
+				const pad = H * maxTan + DESPAWN_MARGIN;
+				const spawnMinX = windSide === 1 ? -pad : 0;
+				const spawnWidth = W + pad;
+
+				// spawn rate scales with spawn width (drops per 60fps frame)
+				spawnAcc += (spawnWidth / 250) * dt;
+				while (spawnAcc >= 1) {
+					spawnAcc--;
+					const len = 20 + Math.random() * 25;
+					drops.push({
+						x: spawnMinX + Math.random() * spawnWidth,
+						y: -len,                        // just above the top
+						len,
+						speed: 18 + Math.random() * 10, // px per 60fps frame (y speed, unaffected by wind)
+					});
+				}
+
+				ctx.clearRect(0, 0, W, H);
+				ctx.strokeStyle = RAIN_COLOR;
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+
+				let n = 0;
+				for (let i = 0; i < drops.length; i++) {
+					const d = drops[i];
+					d.y += d.speed * dt;
+					d.x += d.speed * slant * dt; // wind only adds x movement
+					if (d.y > H + DESPAWN_MARGIN) continue;
+					if (d.x < -DESPAWN_MARGIN - pad || d.x > W + DESPAWN_MARGIN + pad) continue;
+					// the drop is rotated by the wind angle: same y length, x offset follows the slant
+					ctx.moveTo(d.x, d.y);
+					ctx.lineTo(d.x + d.len * slant, d.y + d.len);
+					drops[n++] = d;
+				}
+				drops.length = n;
+
+				ctx.stroke();
+				requestAnimationFrame(tick);
+			}
+			requestAnimationFrame(tick);
+		}
+
+		function onCloudGone() {
+			notFoundEl.textContent = ":(";
+			const thunderSound = new Audio(`ressources/thunder${Math.floor(Math.random() * 2)}.ogg`);
+			thunderSound.preload = 'auto';
+			thunderSound.play();
+			startRain();
+		}
+
+		function spawnCloud() {
+			const MAX_TOUCHES = cloudMessages.length + 1;
+			let touches = 0;
+			let gone = false;
+
+			const style = document.createElement('style');
+			style.textContent = `
+				.cloud {
+					position: absolute; z-index: 9999;
+					left: 0; top: 0;
+					pointer-events: none;
+					-webkit-tap-highlight-color: transparent;
+					user-select: none; -webkit-user-select: none;
+					opacity: 0; transition: opacity 10s ease;
+					will-change: translate;
+				}
+				.cloud img {
+					display: block; height: 100px; width: auto;
+					pointer-events: auto;
+					transition: transform 0.6s ease, filter 0.6s ease;
+					-webkit-user-drag: none;
+				}
+				.cloud.visible { opacity: 0.02; }
+				.cloud.vanish { opacity: 0 !important; transition: opacity 1.5s ease !important; }
+				.cloud img.shake { animation: cloud-shake 0.3s; }
+				@keyframes cloud-shake {
+					0%, 100% { translate: 0 0; }
+					25% { translate: -6px 2px; }
+					75% { translate: 6px -2px; }
+				}
+			`;
+			document.head.appendChild(style);
+
+			const cloud = document.createElement('div');
+			cloud.className = 'cloud';
+
+			const img = document.createElement('img');
+			img.src = 'ressources/cloud.png';
+			img.draggable = false;
+			cloud.appendChild(img);
+
+			function applyProgress() {
+				const t = touches / MAX_TOUCHES;
+				img.style.transform = `scale(${1 - t * 0.85})`;
+				img.style.filter = `brightness(${1 - t * 0.8}) drop-shadow(0 0 12px rgba(150,150,150,0.15))`;
+
+				if (touches > 0) {
+					cloud.style.transition = 'opacity 0.6s ease';
+					cloud.style.opacity = touches * 0.15;
+				}
+			}
+
+			cloud.addEventListener('pointerdown', () => {
+				if (gone) return;
+				touches++;
+
+				img.classList.remove('shake');
+				void img.offsetWidth;
+				img.classList.add('shake');
+
+				if (touches >= MAX_TOUCHES) {
+					gone = true;
+					onCloudGone();
+					cloud.classList.add('vanish');
+					setTimeout(() => {
+						cloud.remove();
+						style.remove();
+					}, 1500);
+					return;
+				}
+				const msg = cloudMessages[touches - 1];
+				notFoundEl.textContent = msg[Math.floor(Math.random() * msg.length)];
+				applyProgress();
+			});
+
+			// lives inside the landing section so it scrolls with the page without affecting layout
+			const landing = document.querySelector('.landing');
+			if (getComputedStyle(landing).position === 'static') landing.style.position = 'relative';
+			landing.appendChild(cloud);
+
+			// movement
+			let x = 0, y = 0;
+			let last = null;
+			const noiseOffset = Math.random() * 1000; // so every cloud wanders differently
+
+			function tick(time) {
+				if (!cloud.isConnected) return; // removed after vanishing
+
+				if (last === null) last = time;
+				const dt = Math.min((time - last) / 16.667, 3); // normalize to 60fps
+				last = time;
+
+				const pageW = landing.clientWidth;
+				const cloudW = cloud.offsetWidth;
+				const maxX = Math.max(0, pageW - cloudW);
+
+				// perlin noise as the base x velocity
+				const noise = perlin1D((time / 1000) * CLOUD_NOISE_FREQUENCY + noiseOffset);
+				let vx = noise * CLOUD_SPEED;
+
+				// extra push away from the sides, which can overpower the noise
+				const zone = pageW * (CLOUD_PUSH_SCREEN_AREA_PERCENTAGE / 100);
+				if (zone > 0) {
+					const leftDist = x;
+					const rightDist = maxX - x;
+					if (leftDist < zone) {
+						const k = 1 - leftDist / zone; // 0 at zone edge, 1 at the wall
+						vx += CLOUD_MAX_PUSH_FORCE * k * k;
+					}
+					if (rightDist < zone) {
+						const k = 1 - rightDist / zone;
+						vx -= CLOUD_MAX_PUSH_FORCE * k * k;
+					}
+				}
+
+				x = Math.min(Math.max(0, x + vx * dt), maxX);
+				cloud.style.translate = `${x}px ${y}px`;
+				requestAnimationFrame(tick);
+			}
+
+			img.addEventListener('load', () => {
+				// random x, semi-random y anywhere above the 404 title
+				const cloudW = cloud.offsetWidth;
+				const cloudH = cloud.offsetHeight;
+				const lr = landing.getBoundingClientRect();
+				const titleTop = document.querySelector('.e404').getBoundingClientRect().top - lr.top;
+
+				const minY = 10;
+				const maxY = Math.max(minY, titleTop - cloudH - 20);
+				y = minY + Math.random() * (maxY - minY);
+				x = Math.random() * Math.max(0, landing.clientWidth - cloudW);
+
+				cloud.style.translate = `${x}px ${y}px`;
+				requestAnimationFrame(tick);
+			});
+
+			applyProgress();
+			requestAnimationFrame(() => requestAnimationFrame(() => cloud.classList.add('visible')));
+		}
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>LXON</title>
+	<link rel="icon" href="ressources/lxon.png" type="image/x-icon">
+	<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400&display=swap">
+	<link rel="stylesheet" href="/ressources/styles.css">
+	<link rel="stylesheet" href="style-home.css">
+</head>
+
+<body>
+
+	<canvas id="noise-canvas"></canvas>
+
+	<a href="https://lebbex.com" class="site-icon">
+		<img src="/ressources/icon.png" alt="Lebbex">
+	</a>
+	<nav class="nav-wrapper">
+		<nav class="nav-box nav-hidden" id="nav-box">
+			<a href="https://github.com/lebbex/LXON" target="_blank" class="nav-link nav-git">
+				<span class="full-text-git">GitHub</span>
+				<span class="short-text-git">Git.</span>
+			</a>
+
+			<a class="nav-link nav-doc" id="nav-doc">
+				<span class="full-text-doc">Documentation</span>
+				<span class="short-text-doc">Doc.</span>
+			</a>
+
+			<a href="https://lxon.lebbex.app" target="_blank" class="nav-link nav-editor">Editor</a>
+		</nav>
+	</nav>
+
+	<div class="dropdown" id="dropdown">
+		<div class="dropdown-content" id="dropdown-content">
+			<div class="dropdown-blur" id="dropdown-blur"></div>
+			<div class="dropdown-content-box" id="dropdown-box">
+				<a class="nav-link" id="nav-containers">Containers</a>
+				<a class="nav-link" id="nav-keys">Keys</a>
+				<a class="nav-link" id="nav-values">Values</a>
+			</div>
+		</div>
+		<div class="subdown" id="subdown">
+			<div class="subdown-wrapper" id="subdown-wrapper">
+				<div class="subdown-content" id="subdown-blur">
+					<div class="subdown-content-box" id="subdown-box"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="nav-hitbox" id="nav-hitbox"></div>
+
+	<div id="scroll-container">
+		<main>
+			<section class="landing">
+				<div class="eyebrow">LEBBEX</div>
+				<h1>LXON</h1>
+			</section>
+
+			<section>
+				<h2 id="about">About</h2>
+				<p>The LXON serialization format is a better JSON alternative developed solely by Nick Jasper.</p>
+				<p>It introduces twice the container types and over quadruple the value types.
+					It also uses far less syntax, making it much smaller (often up to half a JSON file)
+					and far easier to read, write and edit.
+				</p>
+
+			</section>
+
+			<div class="divider"></div>
+
+			<footer>
+				©Lebbex 2026. All rights reserved.
+			</footer>
+		</main>
+	</div>
+
+	<script src="https://unpkg.com/lenis@1.3.23/dist/lenis.min.js"></script>
+	<script src="/ressources/fog.js"></script>
+	<script>
+		const lenis = new Lenis({
+			lerp: 0.1,
+			wheelMultiplier: 0.5,
+		});
+
+		const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+		function docuRaf(time) {
+			lenis.raf(time);
+			requestAnimationFrame(docuRaf);
+		}
+		requestAnimationFrame(docuRaf);
+
+		fog.init([0.0, 0.0, 0.0], [0.45, 0.5, 0.65], lenis, document.scrollingElement, 0.02, 2, 0.08, -1);
+
+		const navBox = document.getElementById('nav-box');
+		const navWrapperEl = document.querySelector('.nav-wrapper');
+		const navHitboxEl = document.getElementById('nav-hitbox');
+		const navDocLink = document.getElementById('nav-doc');
+		const navContainersLink = document.getElementById('nav-containers');
+		const navKeysLink = document.getElementById('nav-keys');
+		const navValuesLink = document.getElementById('nav-values');
+		const dropdownEl = document.getElementById('dropdown');
+		const dropdownContentEl = document.getElementById('dropdown-content');
+		const dropdownBoxEl = document.getElementById('dropdown-box');
+		const dropdownBlurEl = document.getElementById('dropdown-blur');
+		const subdownEl = document.getElementById('subdown');
+		const subdownWrapperEl = document.getElementById('subdown-wrapper');
+		const subdownBoxEl = document.getElementById('subdown-box');
+		const subdownBlurEl = document.getElementById('subdown-blur');
+		const scrollContainer = document.getElementById('scroll-container');
+
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				scrollContainer.classList.add('loaded');
+				navBox.classList.remove('nav-hidden');
+			});
+		});
+
+
+		// Create Hrefs
+
+		function createHref(path, anchor = "") {
+			const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
+			if (path === "") {
+				if (anchor === "") return "/";
+				else return "/#" + anchor;
+			}
+
+			if (isLocal) {
+				if (anchor === "") return path + ".html";
+				else return path + ".html/#" + anchor;
+			}
+
+			if (anchor === "") return path;
+			else return path + "/#" + anchor;
+		}
+
+		document.getElementById("nav-doc").href = createHref("/doc");
+		document.getElementById("nav-containers").href = createHref("/doc/containers");
+		document.getElementById("nav-keys").href = createHref("/doc/keys");
+		document.getElementById("nav-values").href = createHref("/doc/values");
+
+
+
+		// -------------------- Show/Hide Nav --------------------
+
+		let navVisible = true;
+
+		// Lenis scroll window handling
+		lenis.on('scroll', (e) => {
+			if (navVisible && !hoveringNavArea) {
+				if (e.direction === 1) {
+					navBox.classList.add('nav-hidden');
+					navVisible = false;
+				}
+			}
+			else if (e.direction === -1) {
+				navBox.classList.remove('nav-hidden');
+				navVisible = true;
+			}
+
+		});
+
+		let hoveringNavArea = false;
+
+		function setHoveringNavArea(val) {
+			hoveringNavArea = val;
+			if (hoveringNavArea && !navVisible) {
+				navBox.classList.remove('nav-hidden');
+				navVisible = true;
+			}
+		}
+
+		navHitboxEl.addEventListener('mouseenter', () => setHoveringNavArea(true));
+		navHitboxEl.addEventListener('mouseleave', () => setHoveringNavArea(false));
+
+		navWrapperEl.addEventListener('mouseenter', () => setHoveringNavArea(true));
+		navWrapperEl.addEventListener('mouseleave', () => setHoveringNavArea(false));
+
+		dropdownEl.addEventListener('mouseenter', () => setHoveringNavArea(true));
+		dropdownEl.addEventListener('mouseleave', () => setHoveringNavArea(false));
+
+
+
+		// -------------------- Show/Hide Dropdown --------------------
+
+		let hoveringDoc = false;
+		let hoveringDropdown = false;
+
+		let showingDropdown = false;
+		let dropBlurStepAwaiting = false;
+		let dropBlurLevel = 0;
+
+		function setDropdownBlur(px) {
+			dropdownBlurEl.style.backdropFilter = `blur(${px}px)`;
+			dropdownBlurEl.style.webkitBackdropFilter = `blur(${px}px)`;
+		}
+
+		function stepDropdownBlur() {
+			dropBlurStepAwaiting = false;
+
+			if (showingDropdown) {
+				if (dropBlurLevel < 0) dropBlurLevel = 0;
+				dropBlurLevel++;
+				setDropdownBlur(Math.min(dropBlurLevel, 8));
+				if (dropBlurLevel < 8) queueDropdownBlurStep();
+			} else {
+				dropBlurLevel--;
+				setDropdownBlur(Math.max(dropBlurLevel, 0));
+				if (dropBlurLevel > -12) queueDropdownBlurStep();
+				else dropdownEl.style.visibility = `collapse`;
+			}
+		}
+
+		function queueDropdownBlurStep() {
+			if (dropBlurStepAwaiting) return;
+			dropBlurStepAwaiting = true;
+			setTimeout(stepDropdownBlur, 30);
+		}
+
+		function updateDropdownVisibility() {
+			if (isTouch) return;
+			
+			const shouldShow = hoveringDoc || hoveringDropdown;
+			dropdownEl.style.visibility = `visible`;
+			if (shouldShow === showingDropdown) return;
+
+			showingDropdown = shouldShow;
+			dropdownContentEl.classList.toggle('visible', showingDropdown);
+			dropdownBoxEl.classList.toggle('visible', showingDropdown);
+			queueDropdownBlurStep();
+		}
+
+		navDocLink.addEventListener('mouseenter', () => { hoveringDoc = true; updateDropdownVisibility(); });
+		navDocLink.addEventListener('mouseleave', () => { hoveringDoc = false; updateDropdownVisibility(); });
+
+		dropdownEl.addEventListener('mouseenter', () => { hoveringDropdown = true; updateDropdownVisibility(); });
+		dropdownEl.addEventListener('mouseleave', () => { hoveringDropdown = false; updateDropdownVisibility(); });
+
+
+
+		// -------------------- Show/Hide Sub-Dropdown (Subdown) --------------------
+
+		let hoveringContainers = false;
+		let hoveringKeys = false;
+		let hoveringValues = false;
+		let hoveringSubdown = false;
+
+		let showingSubdown = false;
+		let subBlurStepAwaiting = false;
+		let subBlurLevel = 0;
+
+		let hideTimeout = null;
+		let lastAnimationStartTime = 0;
+
+		function setSubdownBlur(px) {
+			subdownBlurEl.style.backdropFilter = `blur(${px}px)`;
+			subdownBlurEl.style.webkitBackdropFilter = `blur(${px}px)`;
+		}
+
+		function stepSubdownBlur() {
+			subBlurStepAwaiting = false;
+
+			if (showingSubdown) {
+				if (subBlurLevel < 0) subBlurLevel = 0;
+				subBlurLevel++;
+				setSubdownBlur(Math.min(subBlurLevel, 8));
+				if (subBlurLevel < 8) queueSubdownBlurStep();
+			} else {
+				subBlurLevel--;
+				setSubdownBlur(Math.max(subBlurLevel, 0));
+				if (subBlurLevel > -18) queueSubdownBlurStep();
+				else subdownEl.style.visibility = `collapse`;
+			}
+		}
+
+		function queueSubdownBlurStep() {
+			if (subBlurStepAwaiting) return;
+			subBlurStepAwaiting = true;
+			setTimeout(stepSubdownBlur, 20);
+		}
+
+		function executeHide() {
+			// Failsafe: check one last time if the user moved their mouse BACK over a menu
+			// while we were waiting for the 0.5s timer to finish.
+			const stillHovering = hoveringContainers || hoveringKeys || hoveringValues || hoveringSubdown;
+			if (stillHovering) return;
+
+			showingSubdown = false;
+			subdownWrapperEl.classList.remove('visible');
+			subdownBoxEl.classList.remove('visible');
+			queueSubdownBlurStep();
+		}
+
+		function updateSubdownVisibility() {
+			const shouldShow = hoveringContainers || hoveringKeys || hoveringValues || hoveringSubdown;
+			subdownEl.style.visibility = `visible`;
+
+			if (shouldShow) {
+				// If we are showing it, cancel any pending hide timers
+				if (hideTimeout) {
+					clearTimeout(hideTimeout);
+					hideTimeout = null;
+				}
+
+				// If it wasn't already showing, show it now
+				if (!showingSubdown) {
+					showingSubdown = true;
+					subdownWrapperEl.classList.add('visible');
+					subdownBoxEl.classList.add('visible');
+					queueSubdownBlurStep();
+				}
+			} else {
+				if (showingSubdown && !hideTimeout) {
+					const timeSinceAnimationStarted = Date.now() - lastAnimationStartTime;
+					const minimumShowTime = 200;
+
+					if (timeSinceAnimationStarted < minimumShowTime) {
+						// If it hasn't been 0.5s yet, wait the remaining time before hiding
+						const remainingTime = minimumShowTime - timeSinceAnimationStarted;
+						hideTimeout = setTimeout(executeHide, remainingTime);
+					} else {
+						// It's been long enough, hide immediately
+						executeHide();
+					}
+				}
+			}
+		}
+
+		navContainersLink.addEventListener('mouseenter', () => { hoveringContainers = true; updateSubdownVisibility(); loadSubdown("containers"); });
+		navContainersLink.addEventListener('mouseleave', () => { hoveringContainers = false; updateSubdownVisibility(); });
+		navKeysLink.addEventListener('mouseenter', () => { hoveringKeys = true; updateSubdownVisibility(); loadSubdown("keys"); });
+		navKeysLink.addEventListener('mouseleave', () => { hoveringKeys = false; updateSubdownVisibility(); });
+		navValuesLink.addEventListener('mouseenter', () => { hoveringValues = true; updateSubdownVisibility(); loadSubdown("values"); });
+		navValuesLink.addEventListener('mouseleave', () => { hoveringValues = false; updateSubdownVisibility(); });
+
+		subdownEl.addEventListener('mouseenter', () => { hoveringSubdown = true; updateSubdownVisibility(); });
+		subdownEl.addEventListener('mouseleave', () => { hoveringSubdown = false; updateSubdownVisibility(); });
+
+
+
+		// -------------------- Switch Contents Sub-Dropdown (Subdown) --------------------
+
+		function restartSubdownRevealAnimation() {
+			// Record exactly when this animation started
+			lastAnimationStartTime = Date.now();
+
+			// 1. Temporarily disable CSS transitions
+			subdownWrapperEl.style.transition = 'none';
+			subdownBoxEl.style.transition = 'none';
+
+			// 2. Remove the visible class 
+			subdownWrapperEl.classList.remove('visible');
+			subdownBoxEl.classList.remove('visible');
+
+			// 3. Force the reflow
+			void subdownWrapperEl.offsetWidth;
+
+			// 4. Restore the CSS transitions
+			subdownWrapperEl.style.transition = '';
+			subdownBoxEl.style.transition = '';
+
+			// 5. Flip back to "shown"
+			subdownWrapperEl.classList.add('visible');
+			subdownBoxEl.classList.add('visible');
+
+			// Reset blur animation
+			subBlurLevel = 0;
+			setSubdownBlur(0);
+			queueSubdownBlurStep();
+		}
+
+		function loadSubdown(key) {
+			subdownBoxEl.innerHTML = null;
+			for (const value of subDropOptions[key]) {
+				const link = document.createElement("a");
+				link.href = createHref("/doc" + value[1]);
+				link.className = "nav-link";
+				link.textContent = value[0];
+				subdownBoxEl.appendChild(link);
+			}
+			subdownBlurEl.classList.remove("containers", "keys", "values");
+			subdownBlurEl.classList.add(key);
+
+			restartSubdownRevealAnimation();
+		}
+
+		const subDropOptions = {
+			containers: [
+				["Root", "/root"],
+				["Object", "/object"],
+				["Array", "/array"],
+				["Map", "/map"],
+				["Doodad", "/doodad"]
+			],
+			keys: [
+				["String", "/keys/string"],
+				["Boolean", "/keys/bool"],
+				["Number", "/keys/number"],
+				["Date", "/keys/date"],
+				["Monetary", "/keys/monetary"],
+				["Keybind", "/keys/keybind"],
+				["Color", "/keys/color"],
+				["Enum", "/keys/enum"]
+			],
+			values: [
+				["Text", "/text"],
+				["Boolean", "/bool"],
+				["Number", "/number"],
+				["Date", "/date"],
+				["Monetary", "/monetary"],
+				["Keybind", "/keybind"],
+				["Color", "/color"],
+				["Enum", "/enum"],
+				["Binary", "/binary"],
+				["Special", "/special"],
+				["Static", "/values#static"]
+			]
+		}
+	</script>
+
+</body>
+
+</html>
