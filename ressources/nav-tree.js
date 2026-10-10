@@ -367,7 +367,7 @@ window.navTree = {
 	},
 	Other: {
 		_nav: "Other",
-		_tit: "Other Features",
+		_tit: "Additional Information",
 		_url: "/other",
 		_page: "Other",
 		_min: "Other",
