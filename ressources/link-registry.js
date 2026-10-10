@@ -763,9 +763,6 @@ window.linkReg = {
                     default: return [split[1]];
                 }
             // -------------------- Other --------------------
-            case "feat":
-            case "feature":
-            case "features":
             case "other":
                 if (len == 1) return "/other";
                 switch (split[1]) {
