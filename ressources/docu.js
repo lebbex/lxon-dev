@@ -137,7 +137,7 @@ window.docu = {
 		miniNav.classList.add("site-mini-nav")
 
 		const home = document.createElement("a");
-		home.href = "/";
+		home.href = "https://lxon.lebbex.com/";
 		home.classList.add("site-icon");
 		home.classList.add("site-home");
 		const homeImage = document.createElement("img");
@@ -194,11 +194,11 @@ window.docu = {
 			t.classList.add("title-mini");
 			if (i < path.length - 1) {
 				if (Array.isArray(obj)) {
-					t.href = docu.createHref("/doc" + obj[2]);
+					t.href = docu.createHref(obj[2]);
 					t.textContent = obj[4];
 				}
 				else {
-					t.href = docu.createHref("/doc" + obj._url);
+					t.href = docu.createHref(obj._url);
 					t.textContent = obj._min;
 				}
 			}
@@ -446,11 +446,11 @@ window.docu = {
 				const finalLink = linkReg.get(link);
 				if (Array.isArray(finalLink)) {
 					docu.failedLinkConversions.push("Failed to create link for '!!" + link + "!' - Failed at key: '" + finalLink[0] + "'")
-					a.href = docu.createHref("/doc");
+					a.href = docu.createHref("");
 				}
 				else {
 					const finalLinkSplit = finalLink.split("/#")
-					a.href = docu.createHref("/doc" + finalLinkSplit[0], finalLinkSplit[1]);
+					a.href = docu.createHref("" + finalLinkSplit[0], finalLinkSplit[1]);
 				}
 				a.textContent = label.trim();
 				frag.appendChild(a);
@@ -600,7 +600,7 @@ window.docu = {
 			if (getPathKey(index - 1) === key) item.classList.add("selected");
 			if (getPathKey(path.length - 1) === key) item.classList.add("open");
 			if (Array.isArray(value)) {
-				item.href = docu.createHref("/doc" + value[2]);
+				item.href = docu.createHref(value[2]);
 				item.textContent = value[0];
 				navInner.appendChild(item);
 				if (getPathKey(path.length - 1) !== key && query === "") continue;
@@ -610,7 +610,7 @@ window.docu = {
 					sub.textContent = value[i][0].replaceAll("_", " ");
 					sub.className = 'nav-sub';
 					sub.classList.add("depth" + index.toString())
-					sub.href = docu.createHref("/doc" + value[2], value[i][1]);
+					sub.href = docu.createHref(value[2], value[i][1]);
 					sub.onclick = event => {
 						docu.stopHashScrollRepeat();
 						const subs = docu.subNavs;
@@ -628,7 +628,7 @@ window.docu = {
 			}
 			// Go deeper
 			else {
-				item.href = docu.createHref("/doc" + value._url);
+				item.href = docu.createHref(value._url);
 				item.textContent = value._nav;
 				navInner.appendChild(item);
 				// I'll be completely honest I have no idea how these if statements work but they do and that's all that matters
