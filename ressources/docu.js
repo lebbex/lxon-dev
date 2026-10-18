@@ -123,7 +123,25 @@ window.docu = {
 				if (sameUrl.pathname === location.pathname) {
 					e.preventDefault();
 					docu.stopHashScrollRepeat();
-					docu.lenis.scrollTo(0);
+
+					// Immediately select the first section under this page entry
+					const first = link.nextElementSibling;
+					if (first && first.classList.contains('nav-sub')) {
+						Object.keys(docu.subNavs).forEach(key => docu.subNavs[key].classList.remove("inter"));
+						first.classList.add("inter");
+
+						// Only "lock" the selection if there's actually somewhere to scroll to
+						if (window.scrollY > 2) {
+							docu.isScrollingToHash = true;
+						}
+					}
+
+					docu.lenis.scrollTo(0, {
+						onComplete: () => {
+							docu.isScrollingToHash = false;
+							docu.renderSubNavs();
+						}
+					});
 					return;
 				}
 			}
