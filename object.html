@@ -20,14 +20,14 @@
 	<div class="content" id="content">
 		<h1 id="def"> Definition </h1>
 		<p>
-			An object is the most used container type in LXON. 
+			An object is the most used container type in LXON.
 			It is based on the JSON object type, which is in turn based on the native JavaScript object type.
 			It serves to organize values by simple yet limited !! keys.reg ! keys !.
 			It doesn't allow for duplicate keys.
 		</p>
 		<h1 id="syntax"> Syntax </h1>
 		<p>
-			To write an object, you must use its declaration character when prompted for a value.
+			To write an object, you must use its declaration character when requiring a value.
 			Objects have two type declarators:
 		</p>
 		<ul>
@@ -35,20 +35,24 @@
 			<li>Newline <span class="a">(The litteral end of line)</span></li>
 		</ul>
 		<p>
+			Be careful however, as newline cannot be used as a object declaration character when writing a value for a
+			!! cont.doo ! doodad !. You must use the curly bracket in such rare case.
+		</p>
+		<p>
 			Afterwards, you must write key/value pairs.
 		</p>
 		<p>
-			To do so, first write a !! keys.reg ! regular key !, 
+			To do so, first write a !! keys.reg ! regular key !,
 			which is mostly just text with a couple conditions requiring to be met.
-			The regular key terminates at the first colon <dfn>:</dfn>, 
+			The regular key terminates at the first colon <dfn>:</dfn>,
 			which helps seperate the key from the value.
 		</p>
 		<p>
-			After terminating the key with a colon, write the !! val ! value ! properly, 
+			After terminating the key with a colon, write the !! val ! value ! properly,
 			ensuring to correctly terminate it before proceeding to the next key.
-			Some values, such as !! val.text.full ! full strings ! 
+			Some values, such as !! val.text.full ! full strings !
 			cannot be terminated on the same line and require a newline altogether.
-			The most reliable way of terminating a value is with a newline, 
+			The most reliable way of terminating a value is with a newline,
 			which is supported for all value types.
 		</p>
 		<p>
@@ -61,16 +65,16 @@ movie2:{ title:`The Shining` release:&1980-5-23
 </code></pre>
 		<h2 id="multiline"> Multiline </h2>
 		<p>
-			As apparent in the example above, 
+			As apparent in the example above,
 			writing an object on a single line often makes it hard to read.
 			The standard way of writing LXON demands (for readable data)
 			that objects containing more than one key/value pair use multiline for clarity.
 		</p>
 		<p>
-			When writing a key/value pair on a newline, 
+			When writing a key/value pair on a newline,
 			simply ensure to add 1 additionnal indentation compared to the parent's indentation.
-			Indentation MUST use tab characters, 
-			space characters aren't taken into consideration for indentation 
+			Indentation MUST use tab characters,
+			space characters aren't taken into consideration for indentation
 			and are instead appended at the start of the key.
 		</p>
 		<p>
@@ -145,7 +149,7 @@ key: "value"
 			(obj2 in the example below).
 		</p>
 		<p>
-			Since objects can be declared by a newline, 
+			Since objects can be declared by a newline,
 			you can even create an empty object by simply writing nothing as a value,
 			a simple newline with improper indentation on the next line
 			(obj3 in the example below).
@@ -160,9 +164,9 @@ obj1: {}
 </code></pre>
 		<h1 id="usage"> Usage </h1>
 		<p>
-			Feel free to temporarily skip all syntax documentation above and 
+			Feel free to temporarily skip all syntax documentation above and
 			look through these examples if you're more of a pattern recognition/visual learner.
-			However, it is very wise to be aware of the rules to avoid doing something 
+			However, it is very wise to be aware of the rules to avoid doing something
 			that seems like it would work but doesn't.
 		</p>
 		<p>

@@ -34,7 +34,7 @@
 		</p>
 		<h1 id="syntax"> Syntax </h1>
 		<p>
-			To write a doodad, when prompted for a value, you must use a non-existant declaration character.
+			To write a doodad, when requiring a value, you must use a non-existant declaration character.
 			The simplest way of doing so is using any letter, uppercase or lowercase, and
 			!! other.escape ! escaping ! other characters that may be declaration characters.
 			You can escape them by prepending a backslash <dfn>\</dfn> to the character.
@@ -91,7 +91,8 @@ movie2: t`The Shining` r&1980-5-23
 		<p>
 			Here are examples of doodads written with multiline taken into account:
 		</p>
-		<pre><code>a t"Acid Rap
+		<pre><code>a
+	t"Acid Rap
 	a "Chance The Rapper
 	r &16-5-27
 
@@ -197,7 +198,8 @@ doo5:
 			With that being said, here are additionnal doodad usage examples, for reference
 			(it's almost the same data as used for the !! cont.obj.use ! object's usage example !):
 		</p>
-		<pre><code>g n "Arrel SG
+		<pre><code>g
+	n "Arrel SG
 	p "RLSG
 	s &21-8-17
 	v p 1
