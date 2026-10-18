@@ -115,7 +115,20 @@ window.docu = {
 
 		document.addEventListener('click', (e) => {
 			const link = e.target.closest('a');
-			if (!link || !link.hash) return;
+			if (!link) return;
+
+			// Clicking the nav entry of the page you're already on -> scroll to top
+			if (!link.hash && link.closest('#nav')) {
+				const sameUrl = new URL(link.href, location.href);
+				if (sameUrl.pathname === location.pathname) {
+					e.preventDefault();
+					docu.stopHashScrollRepeat();
+					docu.lenis.scrollTo(0);
+					return;
+				}
+			}
+
+			if (!link.hash) return;
 
 			const url = new URL(link.href, location.href);
 			if (url.pathname !== location.pathname) return;
@@ -208,7 +221,7 @@ window.docu = {
 					title.textContent = obj[1];
 					append = obj[3];
 					if (item !== "Overview") t.textContent = obj[4];
-				} 
+				}
 				else {
 					title.textContent = obj._tit;
 					t.textContent = obj._min;

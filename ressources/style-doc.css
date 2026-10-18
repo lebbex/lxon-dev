@@ -769,7 +769,6 @@ h3:hover > .hash-button {
     font-weight: lighter;
     transform: translateX(0px);
     border-radius: 5px;
-    pointer-events: none;
 }
 
 .nav2 {
@@ -805,7 +804,6 @@ h3:hover > .hash-button {
     font-weight: lighter;
     transform: translateX(0px);
     border-radius: 5px;
-    pointer-events: none;
 }
 
 .nav3 {
@@ -841,7 +839,6 @@ h3:hover > .hash-button {
     font-weight: lighter;
     transform: translateX(0px);
     border-radius: 5px;
-    pointer-events: none;
 }
 
 .nav4 {
@@ -878,7 +875,6 @@ h3:hover > .hash-button {
     font-weight: lighter;
     transform: translateX(0px);
     border-radius: 5px;
-    pointer-events: none;
 }
 
 .nav-sub {
