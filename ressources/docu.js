@@ -18,6 +18,8 @@ window.docu = {
 
 	hashScrollTicks: 0,
 
+	searchContent: "",
+
 	stopHashScrollRepeat: function () {
 		if (docu.hashScrollInterval) {
 			clearInterval(docu.hashScrollInterval);
@@ -57,6 +59,16 @@ window.docu = {
 			})
 			if (!docu.isScrollingToHash) docu.renderSubNavs();
 		}, { threshold: 0.0001 })
+
+		// Arrived from a nav click with ?search=... : remember the text and remove it from the URL right away
+		// (other parameters and the #hash are kept)
+		const urlParams = new URLSearchParams(location.search);
+		const initialSearch = urlParams.has("search") ? urlParams.get("search") : "";
+		if (urlParams.has("search")) {
+			urlParams.delete("search");
+			const remaining = urlParams.toString();
+			history.replaceState(null, '', location.pathname + (remaining ? "?" + remaining : "") + location.hash);
+		}
 
 
 		let initialHash = location.hash ? location.hash.slice(1) : null;
@@ -285,11 +297,31 @@ window.docu = {
 			event.target.select();
 		});
 		searchInput.addEventListener('input', () => {
-			const query = event.target.value;
-			docu.search(path, query);
+			docu.searchContent = event.target.value;
+			docu.search(path, docu.searchContent);
 		});
 
 		nav.appendChild(searchInput);
+
+
+		// Prefill from ?search=...
+		if (initialSearch) {
+			searchInput.value = initialSearch;
+			searchInput.select();
+			docu.searchContent = initialSearch;
+		}
+
+		// Clicking a nav item that goes to another page: take the searchbar text along as ?search=...
+		document.addEventListener('click', (e) => {
+			const link = e.target.closest('a');
+			if (!link || !link.closest('#nav')) return;
+			const text = searchInput.value;
+			if (text.trim() === "") return;
+			const url = new URL(link.href, location.href);
+			if (url.pathname === location.pathname) return;   // same page: nothing reloads, nothing to carry over
+			url.searchParams.set("search", text);
+			link.href = url.href;
+		});
 
 		// Blur the searchbar on any page interaction that isn't targeting it directly
 		function blurSearchOnInteraction(e) {
@@ -331,7 +363,7 @@ window.docu = {
 		requestAnimationFrame(() => {
 			requestAnimationFrame(() => {
 				content.classList.add('loaded');
-				docu.search(path, "");
+				docu.search(path, searchInput.value);
 				docu.applyObservers = false;
 			});
 		});
@@ -340,9 +372,6 @@ window.docu = {
 			docu.lenis.scrollTo(0, { immediate: true });
 
 			requestAnimationFrame(() => {
-				docu.search(path, "");
-				docu.applyObservers = false;
-
 				if (initialHash) {
 					const subs = docu.subNavs;
 					Object.keys(subs).forEach(key => subs[key].classList.remove("inter"));
@@ -383,9 +412,7 @@ window.docu = {
 					}
 				})
 			}
-			catch {
-
-			}
+			catch {}
 
 			const allHeadings = Array.from(container.children).filter(el => /^H[1-3]$/.test(el.tagName));
 			const h1s = allHeadings.filter(el => targets.has(el.id));
@@ -603,6 +630,7 @@ window.docu = {
 	},
 
 	search: function (path, query) {
+		console.clear();
 		const nav = document.getElementById("nav");
 		const navInner = document.getElementById("nav-inner");
 		const q = query.toLowerCase().split(" ");
@@ -614,22 +642,39 @@ window.docu = {
 	},
 
 
-	writeItem: function (index, path, query, q, object, navInner) {
+	writeItem: function (index, path, query, q, object, navInner, pathToDate = []) {
+		console.log("__________________________")
+		console.log(index);
+		console.log(pathToDate);
+		console.log(path);
 		function getPathKey(key) {
 			const val = path[key];
 			if (typeof val === "string") return path[key].replaceAll(" ", "_");
 			else return undefined;
 		}
+		function isRightPath() {
+			switch (index) {
+				case 2: return path[0] === pathToDate[0];
+				case 3: return path[0] === pathToDate[0] && path[1] === pathToDate[1];
+				case 4: return path[0] === pathToDate[0] && path[1] === pathToDate[1] && path[2] === pathToDate[2];
+				case 5: return path[0] === pathToDate[0] &&
+					path[1] === pathToDate[1] && path[2] === pathToDate[2] && path[3] === pathToDate[3]; // Just in case
+			}
+			return true;
+		}
 		const keys = Object.keys(object);
 		const skippableKeys = new Set(["_nav", "_tit", "_url", "_page", "_min"])
 		for (const key of keys) {
 			if (skippableKeys.has(key)) continue;
+			console.log(key);
 			const value = object[key];
 			if (!docu.matchesQuery(value, query, q) && !docu.matches(key, q)) continue;
 			let item = document.createElement('a');
 			item.className = 'nav' + index.toString();
-			if (getPathKey(index - 1) === key) item.classList.add("selected");
-			if (getPathKey(path.length - 1) === key) item.classList.add("open");
+			if (isRightPath(key)) {
+				if (getPathKey(index - 1) === key) item.classList.add("selected");
+				if (getPathKey(path.length - 1) === key) item.classList.add("open");
+			}
 			if (Array.isArray(value)) {
 				item.href = docu.createHref(value[2]);
 				item.textContent = value[0];
@@ -668,7 +713,7 @@ window.docu = {
 				if (path.length === 1 && getPathKey(1) !== key && query === "" && index === 3) continue;
 				if (path.length > 1 && query === "" && index === 2) { if (getPathKey(1) !== key) continue; }
 				if (path.length > 2 && getPathKey(2) !== key && query === "" && index === 3) continue;
-				docu.writeItem(index + 1, path, query, q, value, navInner);
+				docu.writeItem(index + 1, path, query, q, value, navInner, [...pathToDate, key]);
 			}
 		}
 	},
@@ -744,7 +789,7 @@ window.docu = {
 				}
 			}
 		}
-		if (!wasSet) {
+		if (!wasSet && docu.searchContent === "") {
 			docu.subNavs[keys[keys.length - 1]].classList.add("inter");
 		}
 	},
